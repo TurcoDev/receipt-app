@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './ReceiptForm.css'
+import './ReceiptForm.css';
+import PDFViewer from './PDFViewer';
 
 const ReceiptForm = () => {
   const [tenantName, setTenantName] = useState('');
@@ -14,6 +15,9 @@ const ReceiptForm = () => {
       date: date
     };
     console.log('Recibo generado:', receipt);
+
+    // Enviar el contenido al componente PDFViewer para generar el PDF
+    PDFViewer(receipt);
   };
 
   return (
