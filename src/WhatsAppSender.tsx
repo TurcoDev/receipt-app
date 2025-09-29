@@ -2,7 +2,7 @@ import React from 'react';
 
 const WhatsAppSender = () => {
   const handleSendWhatsApp = () => {
-    // Lógica para enviar el recibo por WhatsApp. AI! 
+    // Lógica para enviar el recibo por WhatsApp.
   };
 
   return (
