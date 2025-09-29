@@ -13,11 +13,7 @@ const PDFViewer = (receipt: Receipt) => {
     const currentDate = new Date().toISOString().replace(/[-:.]/g, '');
     const fileName = `recibo_${currentDate}.pdf`;
 
-    // Crear una carpeta "exports_pdf" si no existe
-    const fs = doc.internal.fs;
-    fs.mkdir('exports_pdf');
-
-    doc.save(`exports_pdf/${fileName}`);
+    doc.save(fileName);
   };
 
   return (
