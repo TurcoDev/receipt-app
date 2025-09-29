@@ -1,8 +1,6 @@
 import jsPDF from 'jspdf';
 import type { Receipt } from './interfaces/receipt.interface';
 
-
-
 const PDFViewer = (receipt: Receipt) => {
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -14,6 +12,10 @@ const PDFViewer = (receipt: Receipt) => {
     doc.text(`Gracias por su pago`, 10, 50);
     const currentDate = new Date().toISOString().replace(/[-:.]/g, '');
     const fileName = `recibo_${currentDate}.pdf`;
+
+    // Crear una carpeta "exports_pdf" si no existe
+    const fs = doc.internal.fs;
+    fs.mkdir('exports_pdf');
 
     doc.save(`exports_pdf/${fileName}`);
   };
