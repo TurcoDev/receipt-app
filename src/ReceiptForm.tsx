@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './ReceiptForm.css'
 
 const ReceiptForm = () => {
   const [tenantName, setTenantName] = useState('');
