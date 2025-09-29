@@ -1,10 +1,15 @@
-import React from 'react';
 import jsPDF from 'jspdf';
+import type { Receipt } from './interfaces/receipt.interface';
 
-const PDFViewer = () => {
+
+
+const PDFViewer = (receipt: Receipt) => {
   const generatePDF = () => {
     const doc = new jsPDF();
-    doc.text('Contenido del recibo en PDF', 10, 10);
+    doc.text(`Recibo de Alquiler`, 10, 10);
+    doc.text(`Inquilino: ${receipt.tenantName}`, 10, 20);
+    doc.text(`Monto: $${receipt.amount}`, 10, 30);
+    doc.text(`Fecha: ${receipt.date}`, 10, 40);
     doc.save('recibo.pdf');
   };
 
