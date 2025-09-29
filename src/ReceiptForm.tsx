@@ -7,6 +7,12 @@ const ReceiptForm = () => {
 
   const handleGenerateReceipt = () => {
     // Lógica para generar el recibo
+    const receipt = {
+      tenantName: tenantName,
+      amount: amount,
+      date: date
+    };
+    console.log('Recibo generado:', receipt);
   };
 
   return (
