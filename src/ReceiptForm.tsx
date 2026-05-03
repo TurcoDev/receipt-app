@@ -1,17 +1,35 @@
 import { useState, useEffect } from 'react';
-import type { Receipt } from './interfaces/receipt.interface';
+import type { Receipt, TaxItem } from './interfaces/receipt.interface';
 import './ReceiptForm.css';
 import generatePDF from './functions/PDFViewer';
 
 const ReceiptForm = () => {
-  const [tenantName, setTenantName] = useState('');
-  const [amount, setAmount] = useState(0);
+  const [tenantName, setTenantName] = useState('Neurocenter SRL');
+  const [rentAmount, setRentAmount] = useState(750000);
+  const [taxes, setTaxes] = useState<TaxItem[]>([{ name: 'Servicios Urbanos', amount: 5473 }]);
   const [paymentDate, setPaymentDate] = useState('');
   const [rentMonth, setRentMonth] = useState('');
-  const [propertyAddress, setPropertyAddress] = useState('');
-  const [propertyType, setPropertyType] = useState('');
+  const [propertyAddress, setPropertyAddress] = useState('Moreno 3121');
+  const [propertyType, setPropertyType] = useState('Oficina');
   const [digitalSignature, setDigitalSignature] = useState<File | null>(null);
   const [signatureName, setSignatureName] = useState('default.png');
+
+  const totalAmount = rentAmount + taxes.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const handleAddTax = () => {
+    setTaxes([...taxes, { name: '', amount: 0 }]);
+  };
+
+  const handleTaxChange = (index: number, field: keyof TaxItem, value: string) => {
+    const updated = taxes.map((t, i) =>
+      i === index ? { ...t, [field]: field === 'amount' ? Number(value) : value } : t
+    );
+    setTaxes(updated);
+  };
+
+  const handleRemoveTax = (index: number) => {
+    setTaxes(taxes.filter((_, i) => i !== index));
+  };
 
   // Cargar firma por defecto al montar el componente
   useEffect(() => {
@@ -53,20 +71,20 @@ const ReceiptForm = () => {
   };
 
   const handleGenerateReceipt = () => {
-    // Validación básica
-    if (!tenantName || !amount || !paymentDate || !rentMonth || !propertyAddress || !propertyType) {
+    if (!tenantName || !rentAmount || !paymentDate || !rentMonth || !propertyAddress || !propertyType) {
       alert('Por favor, completa todos los campos obligatorios');
       return;
     }
 
     const receipt: Receipt = {
-      tenantName: tenantName,
-      amount: amount,
+      tenantName,
+      rentAmount,
+      taxes,
       date: paymentDate,
-      rentMonth: rentMonth,
-      propertyAddress: propertyAddress,
-      propertyType: propertyType,
-      digitalSignature: digitalSignature
+      rentMonth,
+      propertyAddress,
+      propertyType,
+      digitalSignature
     };
     console.log('Recibo generado:', receipt);
 
@@ -120,17 +138,60 @@ const ReceiptForm = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="amount">Monto *</label>
+        <label htmlFor="rentAmount">Alquiler *</label>
         <input
-          id="amount"
+          id="rentAmount"
           type="number"
           placeholder="0.00"
           min="0"
           step="0.01"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          value={rentAmount || ''}
+          onChange={(e) => setRentAmount(Number(e.target.value))}
           required
         />
+      </div>
+
+      <div className="form-group">
+        <label>Impuestos y Adicionales</label>
+        {taxes.map((tax, index) => (
+          <div key={index} className="tax-row">
+            <input
+              type="text"
+              placeholder="Ej: ABL, Expensas, Agua..."
+              value={tax.name}
+              onChange={(e) => handleTaxChange(index, 'name', e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              value={tax.amount || ''}
+              onChange={(e) => handleTaxChange(index, 'amount', e.target.value)}
+            />
+            <button type="button" className="remove-tax-btn" onClick={() => handleRemoveTax(index)}>✕</button>
+          </div>
+        ))}
+        <button type="button" className="add-tax-btn" onClick={handleAddTax}>+ Agregar impuesto</button>
+      </div>
+
+      <div className="total-summary">
+        <div className="total-row">
+          <span>Alquiler</span>
+          <span>${rentAmount.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+        </div>
+        {taxes.map((tax, index) => (
+          tax.name || tax.amount > 0 ? (
+            <div key={index} className="total-row">
+              <span>{tax.name || `Adicional ${index + 1}`}</span>
+              <span>${(tax.amount || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+            </div>
+          ) : null
+        ))}
+        <div className="total-row total-final">
+          <span>Total</span>
+          <span>${totalAmount.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+        </div>
       </div>
 
       <div className="form-group">
