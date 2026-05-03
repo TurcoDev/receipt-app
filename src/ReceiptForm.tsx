@@ -10,7 +10,7 @@ const ReceiptForm = () => {
   const [paymentDate, setPaymentDate] = useState('');
   const [rentMonth, setRentMonth] = useState('');
   const [propertyAddress, setPropertyAddress] = useState('Moreno 3121');
-  const [propertyType, setPropertyType] = useState('Oficina');
+  const [propertyType, setPropertyType] = useState('Casa');
   const [digitalSignature, setDigitalSignature] = useState<File | null>(null);
   const [signatureName, setSignatureName] = useState('default.png');
 

@@ -194,7 +194,7 @@ const generatePDF = async (receipt: Receipt) => {
   }
 
   // Footer
-  const footerY = yPosition + 8;
+  const footerY = yPosition;
   doc.setFillColor(...primaryColor);
   doc.rect(0, footerY, 210, 15, 'F');
   doc.setTextColor(255, 255, 255);
@@ -213,7 +213,7 @@ const generatePDF = async (receipt: Receipt) => {
 
   // Guardar PDF
   const currentDate = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
-  const fileName = `recibo_${receipt.tenantName.replace(/\s+/g, '_')}_${currentDate}.pdf`;
+  const fileName = `recibo_${receipt.tenantName.replace(/\s+/g, '_')}_${receipt.propertyAddress.replace(/\s+/g, '_')}_${currentDate}.pdf`;
   doc.save(fileName);
 };
 
